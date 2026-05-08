@@ -10,6 +10,7 @@
             --accent: #f85149;
             --text: #c9d1d9;
             --white: #ffffff;
+            --green: #238636;
         }
 
         body { 
@@ -18,17 +19,15 @@
             font-family: 'Courier New', Courier, monospace; 
             margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
             max-width: 600px;
-            border-left: 2px solid var(--accent);
-            padding: 40px;
-            background: linear-gradient(90deg, #161b22 0%, #0d1117 100%);
+            padding: 20px;
         }
 
         .label {
@@ -47,8 +46,9 @@
         }
 
         .manifesto {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         .highlight {
@@ -57,37 +57,110 @@
         }
 
         .quote {
-            margin-top: 30px;
+            margin: 20px 0;
             padding: 20px;
             background-color: #000;
             border-radius: 4px;
             font-style: italic;
-            border: 1px hide #30363d;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* --- THE WIRE STYLES --- */
+        .custom-post-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 20px;
+            width: 100%;
+            max-width: 560px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            resize: vertical;
+            min-height: 100px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .submit-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .submit-btn:hover { background: #2ea043; }
+
+        .post {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            padding: 15px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 560px;
+            box-sizing: border-box;
+        }
+
+        .post-header {
+            color: #3fb950;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
         }
 
         .footer {
-            margin-top: 40px;
+            margin-top: 60px;
             font-size: 0.7rem;
             opacity: 0.4;
             letter-spacing: 1px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
-        <h1>YOUTH.AWITHO</h1>
+        <h1>YOUTH AWITHO</h1>
         
         <div class="manifesto">
             They call us "students" to keep us small. <br>
             They call us "kids" to keep us quiet. <br><br>
             
-            We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
+            We are the <span class="highlight">rising generation</span>.
             
             <div class="quote">
-                "Knowledge is the only thing they can never take away from us."
+                "Knowledge is the only thing they can never take away from us."<br><br>
+                "Corruption thrives in silence — we refuse to let it shape our schools."
             </div>
+
+            This is our space to organize and challenge policies we don't agree with.
+        </div>
+
+        <div class="custom-post-box">
+            <div class="label">// INPUT_ANONYMOUS_DATA</div>
+            <form id="anonymous-form" target="hidden_iframe">
+                <textarea id="message-input" placeholder="Enter message for The Wire..." required></textarea>
+                <br>
+                <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
+            </form>
+        </div>
+
+        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 10px; display: none;">[ DATA_TRANSMITTED_SUCCESSFULLY ]</div>
+
+        <div class="label">// THE_WIRE_FEED</div>
+        <div id="thread-feed">
+            <p style="color: #444;">[ INITIALIZING SECURE FEED... ]</p>
         </div>
 
         <div class="footer">
@@ -95,5 +168,24 @@
         </div>
     </div>
 
-</body>
-</html>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+    <script>
+        let submitted = false;
+        
+        const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
+        const entryID = 'entry.633833791';
+        const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
+
+        const formElement = document.getElementById('anonymous-form');
+        const iframeElement = document.getElementById('hidden_iframe');
+        const statusMsg = document.getElementById('status-msg');
+
+        formElement.addEventListener('submit', function() {
+            submitted = true;
+            const msg = document.getElementById('message-input').value;
+            const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
+            iframeElement.src = googleUrl;
+        });
+
+        iframeElement.
