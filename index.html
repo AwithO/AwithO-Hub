@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUTH // AWITHO</title>
+    <script type="module">
+  // 1. Import the tools
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  // 2. Your specific credentials (The "Handshake")
+  const firebaseConfig = {
+    apiKey: "AIza...", 
+    authDomain: "your-project.firebaseapp.com",
+    databaseURL: "https://your-project.firebaseio.com", // MAKE SURE THIS LINE IS HERE
+    projectId: "your-project",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "...",
+    appId: "..."
+  };
+
+  // 3. Initialize
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messagesRef = ref(db, 'messages'); 
+
+  // ... rest of your click logic goes here
+</script>
     <style>
         :root {
             --bg: #0d1117;
