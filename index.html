@@ -26,14 +26,43 @@
         }
 
         .container { max-width: 600px; padding: 20px; width: 100%; }
-        .label { color: var(--accent); font-weight: bold; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 10px; }
+        
+        .label { 
+            color: var(--accent); 
+            font-weight: bold; 
+            letter-spacing: 3px; 
+            font-size: 0.8rem; 
+            margin-bottom: 10px; 
+        }
+
         h1 { font-size: 3.5rem; margin: 0 0 20px 0; color: var(--white); letter-spacing: -2px; }
 
-        /* --- POST BOX STYLES --- */
+        .manifesto {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .highlight {
+            color: var(--white);
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .quote-box {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #000;
+            border-radius: 4px;
+            font-style: italic;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* --- THE WIRE (POSTING) --- */
         .custom-post-box {
             background: #161b22;
             border: 1px solid #30363d;
             padding: 20px;
+            margin-top: 50px;
             margin-bottom: 30px;
             box-sizing: border-box;
         }
@@ -46,7 +75,8 @@
             color: var(--white);
             padding: 8px;
             font-family: monospace;
-            width: 150px;
+            width: 180px;
+            outline: none;
         }
 
         textarea {
@@ -57,7 +87,7 @@
             padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
             box-sizing: border-box;
             outline: none;
         }
@@ -66,24 +96,24 @@
             background: var(--green);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             margin-top: 10px;
             cursor: pointer;
             font-family: monospace;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
-        /* --- POST FEED STYLES --- */
+        /* --- THE WIRE (FEED) --- */
         .post {
             background: #0d1117;
             border: 1px solid #30363d;
             padding: 15px;
             margin-bottom: 15px;
-            position: relative;
         }
 
-        .post-header { color: #3fb950; font-size: 0.8rem; margin-bottom: 8px; }
-        .reply-link { color: #ff3e3e; text-decoration: none; font-weight: bold; }
+        .post-header { color: #3fb950; font-size: 0.8rem; margin-bottom: 10px; }
+        .reply-link { color: var(--accent); font-weight: bold; }
         .btn-reply { 
             font-size: 0.7rem; 
             color: #8b949e; 
@@ -92,37 +122,59 @@
             text-decoration: underline; 
         }
 
-        .footer { margin-top: 60px; font-size: 0.7rem; opacity: 0.4; text-align: center; }
+        .footer { margin-top: 80px; font-size: 0.7rem; opacity: 0.4; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
         <h1>YOUTH AWITHO</h1>
         
+        <div class="manifesto">
+            They call us "students" to keep us small. <br>
+            They call us "kids" to keep us quiet. <br><br>
+            
+            We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
+            
+            <div class="quote-box">
+                "Knowledge is the only thing they can never take away from us."<br><br>
+                "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
+            </div>
+
+            We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us. We stand together to defend our rights and demand accountability.
+        </div>
+
         <div class="custom-post-box">
             <div class="label">// INPUT_INTEL</div>
             <form id="anonymous-form" target="hidden_iframe">
                 <div class="input-row">
                     <input type="text" id="name-input" placeholder="Handle (Optional)">
                 </div>
-                <textarea id="message-input" placeholder="Type message... Use >>[ID] to reply" required></textarea>
+                <textarea id="message-input" placeholder="Enter message... Use >>[ID] to reply" required></textarea>
                 <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
             </form>
         </div>
 
-        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 10px; display: none;">[ DATA_SENT ]</div>
+        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 20px; display: none; font-weight: bold;">
+            [ DATA_TRANSMITTED_SUCCESSFULLY ]
+        </div>
 
         <div class="label">// THE_WIRE_FEED</div>
-        <div id="thread-feed"></div>
+        <div id="thread-feed">
+            <p style="color: #444;">[ INITIALIZING SECURE FEED... ]</p>
+        </div>
 
-        <div class="footer">// NODE 01 // CLEARFIELD_UT // 2026</div>
+        <div class="footer">
+            // NODE 01 // CLEARFIELD_UT // 2026
+        </div>
     </div>
 
     <iframe name="hidden_iframe" id="hidden_iframe" src="about:blank" style="display:none;"></iframe>
 
     <script>
         let submitted = false;
+        
         const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
         const entryID = 'entry.633833791';
         const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
@@ -134,7 +186,7 @@
         formElement.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = nameElement.value || "Anonymous";
-            const msg = `[${name}] ${inputElement.value}`; // Wrap name in brackets so we can parse it
+            const msg = `[${name}] ${inputElement.value}`; 
             
             const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
             
@@ -151,7 +203,7 @@
                 setTimeout(() => { 
                     document.getElementById('status-msg').style.display = 'none'; 
                     loadThreads(); 
-                }, 1000);
+                }, 1500);
             }
         };
 
@@ -162,27 +214,35 @@
 
         async function loadThreads() {
             try {
-                const response = await fetch(sheetCSV + '?t=' + new Date().getTime());
+                const response = await fetch(sheetCSV + '&t=' + new Date().getTime());
                 const data = await response.text();
-                const rows = data.split('\n').filter(r => r.trim() !== '').slice(1);
+                
+                const rows = data.split('\n').map(r => r.trim()).filter(r => r.length > 0).slice(1);
                 const feed = document.getElementById('thread-feed');
-                feed.innerHTML = '';
+                
+                if (rows.length === 0) {
+                    feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND ]</p>';
+                    return;
+                }
 
-                rows.reverse().forEach((row, index) => {
+                feed.innerHTML = '';
+                const reversedRows = [...rows].reverse();
+
+                reversedRows.forEach((row, index) => {
                     const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if (cols.length < 2) return;
 
                     let rawMsg = cols[1].replace(/"/g, '');
                     let posterName = "Anonymous";
 
-                    // Extract name from brackets if it exists
                     if (rawMsg.startsWith('[')) {
                         const endBracket = rawMsg.indexOf(']');
-                        posterName = rawMsg.substring(1, endBracket);
-                        rawMsg = rawMsg.substring(endBracket + 1);
+                        if (endBracket !== -1) {
+                            posterName = rawMsg.substring(1, endBracket);
+                            rawMsg = rawMsg.substring(endBracket + 1);
+                        }
                     }
 
-                    // Convert >>ID into a red link
                     const formattedMsg = rawMsg.replace(/>>(\d+)/g, '<span class="reply-link">>>$1</span>');
                     const postID = rows.length - index;
 
@@ -190,18 +250,20 @@
                         <div class="post" id="p${postID}">
                             <div class="post-header">
                                 <span style="color:var(--white)">${posterName}</span> 
-                                <span>#${postID}</span>
+                                <span style="color:#3fb950; margin-left: 5px;">#${postID}</span>
                                 <span class="btn-reply" onclick="setReply(${postID})">[Reply]</span>
                             </div>
-                            <div class="post-body">${formattedMsg}</div>
+                            <div class="post-body" style="white-space: pre-wrap;">${formattedMsg}</div>
                         </div>
                     `;
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error(e);
+            }
         }
 
         loadThreads();
-        setInterval(loadThreads, 30000);
+        setInterval(loadThreads, 20000); 
     </script>
 </body>
 </html>
