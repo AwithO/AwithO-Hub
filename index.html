@@ -1,190 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUTH // AWITHO</title>
-    <style>
-        :root {
-            --bg: #0d1117;
-            --accent: #f85149;
-            --text: #c9d1d9;
-            --white: #ffffff;
-            --green: #238636;
-        }
+<!-- Keep your existing <head> and <style> sections exactly as they are -->
 
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            font-family: 'Courier New', Courier, monospace; 
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container { max-width: 600px; padding: 20px; width: 100%; }
-        
-        .label { 
-            color: var(--accent); 
-            font-weight: bold; 
-            letter-spacing: 3px; 
-            font-size: 0.8rem; 
-            margin-bottom: 10px; 
-        }
-
-        h1 { font-size: 3.5rem; margin: 0 0 20px 0; color: var(--white); letter-spacing: -2px; }
-
-        .manifesto {
-            font-size: 1.15rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .highlight {
-            color: var(--white);
-            border-bottom: 1px solid var(--accent);
-        }
-
-        .quote-box {
-            margin: 30px 0;
-            padding: 20px;
-            background-color: #000;
-            border-radius: 4px;
-            font-style: italic;
-            border-left: 3px solid var(--accent);
-        }
-
-        /* --- THE WIRE (POSTING) --- */
-        .custom-post-box {
-            background: #161b22;
-            border: 1px solid #30363d;
-            padding: 20px;
-            margin-top: 50px;
-            margin-bottom: 30px;
-            box-sizing: border-box;
-        }
-
-        #reply-indicator { 
-            color: var(--green); 
-            font-size: 0.8rem; 
-            margin-bottom: 10px; 
-            display: none; 
-            font-weight: bold;
-        }
-
-        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        
-        input[type="text"] {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: var(--white);
-            padding: 8px;
-            font-family: monospace;
-            width: 180px;
-            outline: none;
-        }
-
-        textarea {
-            width: 100%;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: #e6edf3;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            resize: vertical;
-            min-height: 100px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        .submit-btn {
-            background: var(--green);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            margin-top: 10px;
-            cursor: pointer;
-            font-family: monospace;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        /* --- THE WIRE (FEED) --- */
-        .post {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .post-header { color: #3fb950; font-size: 0.8rem; margin-bottom: 10px; }
-        
-        .replies-container {
-            margin-left: 20px;
-            border-left: 2px solid var(--green);
-            padding-left: 15px;
-            margin-top: 15px;
-        }
-
-        .reply-item {
-            padding: 10px 0;
-            border-top: 1px solid #30363d;
-            font-size: 0.9rem;
-        }
-
-        .btn-reply { 
-            font-size: 0.7rem; 
-            color: #8b949e; 
-            cursor: pointer; 
-            margin-left: 10px; 
-            text-decoration: underline; 
-        }
-
-        .cancel-x { color: var(--accent); cursor: pointer; margin-left: 10px; }
-
-        .footer { margin-top: 80px; font-size: 0.7rem; opacity: 0.4; text-align: center; }
-    </style>
-</head>
 <body>
-
     <div class="container">
-        <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
-        <h1>YOUTH AWITHO</h1>
-        
-        <div class="manifesto">
-            They call us "students" to keep us small. <br>
-            They call us "kids" to keep us quiet. <br><br>
+        <!-- Wrap the manifesto/form in a div so we can hide it in Thread Mode -->
+        <div id="main-content">
+            <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
+            <h1>YOUTH AWITHO</h1>
             
-            We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
-            
-            <div class="quote-box">
-                "Knowledge is the only thing they can never take away from us."<br><br>
-                "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
+            <div class="manifesto">
+                They call us "students" to keep us small. <br>
+                They call us "kids" to keep us quiet. <br><br>
+                
+                We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
+                
+                <div class="quote-box">
+                    "Knowledge is the only thing they can never take away from us."<br><br>
+                    "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
+                </div>
+
+                We are a decentralized student collective built on solidarity.
             </div>
 
-            We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us.
+            <div class="custom-post-box">
+                <div class="label">// INPUT_INTEL</div>
+                <div id="reply-indicator">REPLYING_TO: <span id="target-id"></span> <span class="cancel-x" onclick="cancelReply()">[CANCEL]</span></div>
+                <form id="anonymous-form">
+                    <div class="input-row">
+                        <input type="text" id="name-input" placeholder="Handle (Optional)">
+                    </div>
+                    <textarea id="message-input" placeholder="Enter message..." required></textarea>
+                    <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
+                </form>
+            </div>
         </div>
 
-        <div class="custom-post-box">
-            <div class="label">// INPUT_INTEL</div>
-            <div id="reply-indicator">REPLYING_TO: <span id="target-id"></span> <span class="cancel-x" onclick="cancelReply()">[CANCEL]</span></div>
-            <form id="anonymous-form">
-                <div class="input-row">
-                    <input type="text" id="name-input" placeholder="Handle (Optional)">
-                </div>
-                <textarea id="message-input" placeholder="Enter message..." required></textarea>
-                <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
-            </form>
+        <!-- Back button (Only visible in thread mode) -->
+        <div id="thread-header" style="display:none; width: 100%; margin-bottom: 20px;">
+            <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">[ ← BACK TO THE WIRE ]</a>
         </div>
 
-        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 20px; display: none; font-weight: bold;">
-            [ DATA_TRANSMITTED_SUCCESSFULLY ]
-        </div>
-
-        <div class="label">// THE_WIRE_FEED</div>
+        <div class="label" id="feed-label">// THE_WIRE_FEED</div>
         <div id="thread-feed">
             <p style="color: #444;">[ INITIALIZING SECURE FEED... ]</p>
         </div>
@@ -196,109 +51,92 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBpLuL8fVwowVXscZ7ZSjk9l4Cx0nEqU4Y",
             authDomain: "awithoyouth.firebaseapp.com",
-            databaseURL: "https://awithoyouth-default-rtdb.firebaseio.com/", // Verify this in your Firebase Data tab
+            databaseURL: "https://awithoyouth-default-rtdb.firebaseio.com/",
             projectId: "awithoyouth",
             storageBucket: "awithoyouth.firebasestorage.app",
             messagingSenderId: "895546768017",
-            appId: "1:895546768017:web:75f429127fb7784f9f1d30",
-            measurementId: "G-XY20K8L5VP"
+            appId: "1:895546768017:web:75f429127fb7784f9f1d30"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const messagesRef = ref(db, 'messages');
+        
+        // --- ROUTING LOGIC ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const threadId = urlParams.get('post');
 
-        const formElement = document.getElementById('anonymous-form');
-        const nameInput = document.getElementById('name-input');
-        const msgInput = document.getElementById('message-input');
-        const feed = document.getElementById('thread-feed');
-        let currentReplyKey = null;
+        if (threadId) {
+            // WE ARE IN THREAD MODE
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('thread-header').style.display = 'block';
+            document.getElementById('feed-label').innerText = `// THREAD_ID: ${threadId.substring(0,8)}`;
+            loadSingleThread(threadId);
+        } else {
+            // WE ARE IN MAIN FEED MODE
+            loadMainFeed();
+        }
 
-        // SEND TO FIREBASE
-        formElement.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = nameInput.value || "Anonymous";
-            
-            if (currentReplyKey) {
-                // Nested Reply
-                const replyRef = ref(db, `messages/${currentReplyKey}/replies`);
-                push(replyRef, {
-                    username: name,
-                    text: msgInput.value,
-                    timestamp: serverTimestamp()
+        function loadMainFeed() {
+            const messagesRef = ref(db, 'messages');
+            onValue(messagesRef, (snapshot) => {
+                const feed = document.getElementById('thread-feed');
+                feed.innerHTML = '';
+                const data = snapshot.val();
+                if (!data) return;
+
+                Object.entries(data).reverse().forEach(([key, msg]) => {
+                    const replyCount = msg.replies ? Object.keys(msg.replies).length : 0;
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post';
+                    postDiv.innerHTML = `
+                        <div class="post-header"><span style="color:var(--white)">${msg.username}</span></div>
+                        <div class="post-body">${msg.text}</div>
+                        <div style="margin-top:10px;">
+                            <a href="?post=${key}" style="color:var(--green); font-size:0.8rem; text-decoration:none;">
+                                [ VIEW THREAD (${replyCount}) ]
+                            </a>
+                        </div>
+                    `;
+                    feed.appendChild(postDiv);
                 });
-            } else {
-                // Top-Level Post
-                push(messagesRef, {
-                    username: name,
-                    text: msgInput.value,
-                    timestamp: serverTimestamp()
-                });
-            }
+            });
+        }
 
-            msgInput.value = '';
-            cancelReply();
-            document.getElementById('status-msg').style.display = 'block';
-            setTimeout(() => { document.getElementById('status-msg').style.display = 'none'; }, 2000);
-        });
+        function loadSingleThread(id) {
+            const postRef = ref(db, `messages/${id}`);
+            onValue(postRef, (snapshot) => {
+                const feed = document.getElementById('thread-feed');
+                const msg = snapshot.val();
+                if (!msg) return;
 
-        // LIVE FEED LISTENER
-        onValue(messagesRef, (snapshot) => {
-            feed.innerHTML = '';
-            const data = snapshot.val();
-            if (!data) {
-                feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND ]</p>';
-                return;
-            }
-
-            // Reverse to show newest posts first
-            const entries = Object.entries(data).reverse();
-            entries.forEach(([key, msg]) => {
-                const postDiv = document.createElement('div');
-                postDiv.className = 'post';
-                
                 let repliesHtml = '';
                 if (msg.replies) {
-                    repliesHtml = `<div class="replies-container">`;
                     Object.values(msg.replies).forEach(r => {
                         repliesHtml += `
-                            <div class="reply-item">
+                            <div class="reply-item" style="border-top:1px solid #30363d; padding:10px 0;">
                                 <div class="post-header"><span style="color:var(--white)">${r.username}</span></div>
-                                <div style="white-space: pre-wrap;">${r.text}</div>
+                                <div>${r.text}</div>
                             </div>`;
                     });
-                    repliesHtml += `</div>`;
                 }
 
-                postDiv.innerHTML = `
-                    <div class="post-header">
-                        <span style="color:var(--white)">${msg.username}</span> 
-                        <span class="btn-reply" onclick="setReplyTarget('${key}', '${msg.username}')">[Reply]</span>
+                feed.innerHTML = `
+                    <div class="post" style="border: 2px solid var(--green);">
+                        <div class="post-header"><span style="color:var(--white)">${msg.username}</span></div>
+                        <div class="post-body" style="font-size:1.2rem;">${msg.text}</div>
                     </div>
-                    <div class="post-body" style="white-space: pre-wrap;">${msg.text}</div>
-                    ${repliesHtml}
+                    <div class="label" style="margin-top:20px;">// REPLIES</div>
+                    <div class="replies-container">${repliesHtml || '[ NO REPLIES YET ]'}</div>
                 `;
-                feed.appendChild(postDiv);
             });
-        });
+        }
 
-        // GLOBAL HELPERS
-        window.setReplyTarget = (key, user) => {
-            currentReplyKey = key;
-            document.getElementById('reply-indicator').style.display = 'block';
-            document.getElementById('target-id').innerText = user;
-            msgInput.focus();
-        };
-
-        window.cancelReply = () => {
-            currentReplyKey = null;
-            document.getElementById('reply-indicator').style.display = 'none';
-        };
+        // Keep your existing Submit Logic here, just make sure 
+        // the 'if(currentReplyKey)' uses the threadId if it exists!
     </script>
 </body>
-</html>
