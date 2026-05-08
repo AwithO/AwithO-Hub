@@ -25,55 +25,28 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 600px;
-            padding: 20px;
-        }
+        .container { max-width: 600px; padding: 20px; width: 100%; }
+        .label { color: var(--accent); font-weight: bold; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 10px; }
+        h1 { font-size: 3.5rem; margin: 0 0 20px 0; color: var(--white); letter-spacing: -2px; }
 
-        .label {
-            color: var(--accent);
-            font-weight: bold;
-            letter-spacing: 3px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            margin: 0 0 20px 0;
-            color: var(--white);
-            letter-spacing: -2px;
-        }
-
-        .manifesto {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .highlight {
-            color: var(--white);
-            border-bottom: 1px solid var(--accent);
-        }
-
-        .quote {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: #000;
-            border-radius: 4px;
-            font-style: italic;
-            border-left: 3px solid var(--accent);
-        }
-
-        /* --- THE WIRE STYLES --- */
+        /* --- POST BOX STYLES --- */
         .custom-post-box {
             background: #161b22;
             border: 1px solid #30363d;
             padding: 20px;
-            width: 100%;
-            max-width: 560px;
             margin-bottom: 30px;
             box-sizing: border-box;
+        }
+
+        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        
+        input[type="text"] {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: var(--white);
+            padding: 8px;
+            font-family: monospace;
+            width: 150px;
         }
 
         textarea {
@@ -84,7 +57,7 @@
             padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
             box-sizing: border-box;
             outline: none;
         }
@@ -93,39 +66,33 @@
             background: var(--green);
             color: white;
             border: none;
-            padding: 12px 24px;
-            margin-top: 15px;
+            padding: 10px 20px;
+            margin-top: 10px;
             cursor: pointer;
             font-family: monospace;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
-        .submit-btn:hover { background: #2ea043; }
-
+        /* --- POST FEED STYLES --- */
         .post {
             background: #0d1117;
             border: 1px solid #30363d;
             padding: 15px;
             margin-bottom: 15px;
-            width: 100%;
-            max-width: 560px;
-            box-sizing: border-box;
+            position: relative;
         }
 
-        .post-header {
-            color: #3fb950;
-            font-size: 0.8rem;
-            margin-bottom: 8px;
+        .post-header { color: #3fb950; font-size: 0.8rem; margin-bottom: 8px; }
+        .reply-link { color: #ff3e3e; text-decoration: none; font-weight: bold; }
+        .btn-reply { 
+            font-size: 0.7rem; 
+            color: #8b949e; 
+            cursor: pointer; 
+            margin-left: 10px; 
+            text-decoration: underline; 
         }
 
-        .footer {
-            margin-top: 60px;
-            font-size: 0.7rem;
-            opacity: 0.4;
-            letter-spacing: 1px;
-            text-align: center;
-        }
+        .footer { margin-top: 60px; font-size: 0.7rem; opacity: 0.4; text-align: center; }
     </style>
 </head>
 <body>
@@ -133,123 +100,108 @@
     <div class="container">
         <h1>YOUTH AWITHO</h1>
         
-        <div class="manifesto">
-            They call us "students" to keep us small. <br>
-            They call us "kids" to keep us quiet. <br><br>
-            
-            We are the <span class="highlight">rising generation</span>.
-            
-            <div class="quote">
-                "Knowledge is the only thing they can never take away from us."<br><br>
-                "Corruption thrives in silence — we refuse to let it shape our schools."
-            </div>
-
-            This is our space to organize and challenge policies we don't agree with.
-        </div>
-
         <div class="custom-post-box">
-            <div class="label">// INPUT_ANONYMOUS_DATA</div>
+            <div class="label">// INPUT_INTEL</div>
             <form id="anonymous-form" target="hidden_iframe">
-                <textarea id="message-input" placeholder="Enter message for The Wire..." required></textarea>
-                <br>
+                <div class="input-row">
+                    <input type="text" id="name-input" placeholder="Handle (Optional)">
+                </div>
+                <textarea id="message-input" placeholder="Type message... Use >>[ID] to reply" required></textarea>
                 <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
             </form>
         </div>
 
-        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 10px; display: none;">[ DATA_TRANSMITTED_SUCCESSFULLY ]</div>
+        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 10px; display: none;">[ DATA_SENT ]</div>
 
         <div class="label">// THE_WIRE_FEED</div>
-        <div id="thread-feed">
-            <p style="color: #444;">[ INITIALIZING SECURE FEED... ]</p>
-        </div>
+        <div id="thread-feed"></div>
 
-        <div class="footer">
-            // NODE 01 // CLEARFIELD_UT // 2026
-        </div>
+        <div class="footer">// NODE 01 // CLEARFIELD_UT // 2026</div>
     </div>
 
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+    <iframe name="hidden_iframe" id="hidden_iframe" src="about:blank" style="display:none;"></iframe>
 
+    <script>
+        let submitted = false;
+        const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
+        const entryID = 'entry.633833791';
+        const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
 
-<script>
-    let submitted = false;
-    
-    // IDs verified from your previous message
-    const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
-    const entryID = 'entry.633833791';
-    const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
+        const formElement = document.getElementById('anonymous-form');
+        const inputElement = document.getElementById('message-input');
+        const nameElement = document.getElementById('name-input');
 
-    const formElement = document.getElementById('anonymous-form');
-    const iframeElement = document.getElementById('hidden_iframe');
-    const inputElement = document.getElementById('message-input');
-
-    formElement.addEventListener('submit', function(e) {
-        // Prevent actual form submission to keep user on page
-        e.preventDefault(); 
-        
-        const msg = inputElement.value;
-        const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
-        
-        // Show the user something is happening
-        document.getElementById('status-msg').style.display = 'block';
-        document.getElementById('status-msg').innerText = '[ TRANSMITTING... ]';
-
-        // Trigger the silent submission
-        submitted = true;
-        iframeElement.src = googleUrl;
-    });
-
-    iframeElement.onload = function() {
-        if (submitted) {
-            inputElement.value = '';
-            document.getElementById('status-msg').innerText = '[ DATA_TRANSMITTED_SUCCESSFULLY ]';
-            submitted = false;
+        formElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = nameElement.value || "Anonymous";
+            const msg = `[${name}] ${inputElement.value}`; // Wrap name in brackets so we can parse it
             
-            // Wait 2 seconds then hide status and refresh the feed
-            setTimeout(() => { 
-                document.getElementById('status-msg').style.display = 'none'; 
-                loadThreads(); 
-            }, 2000);
-        }
-    };
+            const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
+            
+            submitted = true;
+            document.getElementById('hidden_iframe').src = googleUrl;
+            document.getElementById('status-msg').style.display = 'block';
+        });
 
-    async function loadThreads() {
-        try {
-            // Adding a timestamp to the URL prevents the browser from "caching" old data
-            const response = await fetch(sheetCSV + '&t=' + new Date().getTime());
-            const data = await response.text();
-            
-            const rows = data.split('\n').filter(row => row.trim() !== '').slice(1);
-            const feed = document.getElementById('thread-feed');
-            
-            if (rows.length === 0) {
-                feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND IN THE WIRE ]</p>';
-                return;
+        document.getElementById('hidden_iframe').onload = function() {
+            if (submitted) {
+                inputElement.value = '';
+                nameElement.value = '';
+                submitted = false;
+                setTimeout(() => { 
+                    document.getElementById('status-msg').style.display = 'none'; 
+                    loadThreads(); 
+                }, 1000);
             }
+        };
 
-            feed.innerHTML = ''; 
-            rows.reverse().forEach((row, index) => {
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-                if (cols.length < 2) return;
-
-                const time = cols[0].replace(/"/g, '');
-                const msg = cols[1].replace(/"/g, '');
-
-                feed.innerHTML += `
-                    <div class="post">
-                        <div class="post-header">
-                            Anonymous <span style="font-weight:bold;">#${rows.length - index}</span>
-                            <span style="color:#8b949e; margin-left:10px;">${time}</span>
-                        </div>
-                        <div class="post-body">${msg}</div>
-                    </div>
-                `;
-            });
-        } catch (error) {
-            console.error('Feed Error:', error);
+        function setReply(id) {
+            inputElement.value = `>>${id} ` + inputElement.value;
+            inputElement.focus();
         }
-    }
 
-    loadThreads();
-    setInterval(loadThreads, 30000); // Check for new posts every 30 seconds
-</script>
+        async function loadThreads() {
+            try {
+                const response = await fetch(sheetCSV + '?t=' + new Date().getTime());
+                const data = await response.text();
+                const rows = data.split('\n').filter(r => r.trim() !== '').slice(1);
+                const feed = document.getElementById('thread-feed');
+                feed.innerHTML = '';
+
+                rows.reverse().forEach((row, index) => {
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (cols.length < 2) return;
+
+                    let rawMsg = cols[1].replace(/"/g, '');
+                    let posterName = "Anonymous";
+
+                    // Extract name from brackets if it exists
+                    if (rawMsg.startsWith('[')) {
+                        const endBracket = rawMsg.indexOf(']');
+                        posterName = rawMsg.substring(1, endBracket);
+                        rawMsg = rawMsg.substring(endBracket + 1);
+                    }
+
+                    // Convert >>ID into a red link
+                    const formattedMsg = rawMsg.replace(/>>(\d+)/g, '<span class="reply-link">>>$1</span>');
+                    const postID = rows.length - index;
+
+                    feed.innerHTML += `
+                        <div class="post" id="p${postID}">
+                            <div class="post-header">
+                                <span style="color:var(--white)">${posterName}</span> 
+                                <span>#${postID}</span>
+                                <span class="btn-reply" onclick="setReply(${postID})">[Reply]</span>
+                            </div>
+                            <div class="post-body">${formattedMsg}</div>
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        loadThreads();
+        setInterval(loadThreads, 30000);
+    </script>
+</body>
+</html>
