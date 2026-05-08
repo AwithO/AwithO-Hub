@@ -4,29 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUTH // AWITHO</title>
-    <script type="module">
-  // 1. Import the tools
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-  // 2. Your specific credentials (The "Handshake")
-  const firebaseConfig = {
-    apiKey: "AIza...", 
-    authDomain: "your-project.firebaseapp.com",
-    databaseURL: "https://your-project.firebaseio.com", // MAKE SURE THIS LINE IS HERE
-    projectId: "your-project",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "...",
-    appId: "..."
-  };
-
-  // 3. Initialize
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const messagesRef = ref(db, 'messages'); 
-
-  // ... rest of your click logic goes here
-</script>
     <style>
         :root {
             --bg: #0d1117;
@@ -165,12 +142,12 @@
                 "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
             </div>
 
-            We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us. We stand together to defend our rights and demand accountability.
+            We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us.
         </div>
 
         <div class="custom-post-box">
             <div class="label">// INPUT_INTEL</div>
-            <form id="anonymous-form" target="hidden_iframe">
+            <form id="anonymous-form">
                 <div class="input-row">
                     <input type="text" id="name-input" placeholder="Handle (Optional)">
                 </div>
@@ -193,100 +170,85 @@
         </div>
     </div>
 
-    <iframe name="hidden_iframe" id="hidden_iframe" src="about:blank" style="display:none;"></iframe>
+    <!-- FIREBASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <script>
-        let submitted = false;
-        
-        const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
-        const entryID = 'entry.633833791';
-        const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
-
-        const formElement = document.getElementById('anonymous-form');
-        const inputElement = document.getElementById('message-input');
-        const nameElement = document.getElementById('name-input');
-
-        formElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = nameElement.value || "Anonymous";
-            const msg = `[${name}] ${inputElement.value}`; 
-            
-            const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
-            
-            submitted = true;
-            document.getElementById('hidden_iframe').src = googleUrl;
-            document.getElementById('status-msg').style.display = 'block';
-        });
-
-        document.getElementById('hidden_iframe').onload = function() {
-            if (submitted) {
-                inputElement.value = '';
-                nameElement.value = '';
-                submitted = false;
-                setTimeout(() => { 
-                    document.getElementById('status-msg').style.display = 'none'; 
-                    loadThreads(); 
-                }, 1500);
-            }
+        // REPLACE WITH YOUR ACTUAL CONFIG FROM FIREBASE CONSOLE
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
         };
 
-        function setReply(id) {
-            inputElement.value = `>>${id} ` + inputElement.value;
-            inputElement.focus();
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const messagesRef = ref(db, 'messages');
 
-        async function loadThreads() {
-            try {
-                const response = await fetch(sheetCSV + '&t=' + new Date().getTime());
-                const data = await response.text();
-                
-                const rows = data.split('\n').map(r => r.trim()).filter(r => r.length > 0).slice(1);
-                const feed = document.getElementById('thread-feed');
-                
-                if (rows.length === 0) {
-                    feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND ]</p>';
-                    return;
-                }
+        const formElement = document.getElementById('anonymous-form');
+        const nameInput = document.getElementById('name-input');
+        const msgInput = document.getElementById('message-input');
+        const feed = document.getElementById('thread-feed');
 
-                feed.innerHTML = '';
-                const reversedRows = [...rows].reverse();
+        // SEND TO FIREBASE
+        formElement.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = nameInput.value || "Anonymous";
+            
+            push(messagesRef, {
+                username: name,
+                text: msgInput.value,
+                timestamp: serverTimestamp()
+            });
 
-                reversedRows.forEach((row, index) => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (cols.length < 2) return;
+            msgInput.value = '';
+            nameInput.value = '';
+            document.getElementById('status-msg').style.display = 'block';
+            setTimeout(() => { document.getElementById('status-msg').style.display = 'none'; }, 2000);
+        });
 
-                    let rawMsg = cols[1].replace(/"/g, '');
-                    let posterName = "Anonymous";
-
-                    if (rawMsg.startsWith('[')) {
-                        const endBracket = rawMsg.indexOf(']');
-                        if (endBracket !== -1) {
-                            posterName = rawMsg.substring(1, endBracket);
-                            rawMsg = rawMsg.substring(endBracket + 1);
-                        }
-                    }
-
-                    const formattedMsg = rawMsg.replace(/>>(\d+)/g, '<span class="reply-link">>>$1</span>');
-                    const postID = rows.length - index;
-
-                    feed.innerHTML += `
-                        <div class="post" id="p${postID}">
-                            <div class="post-header">
-                                <span style="color:var(--white)">${posterName}</span> 
-                                <span style="color:#3fb950; margin-left: 5px;">#${postID}</span>
-                                <span class="btn-reply" onclick="setReply(${postID})">[Reply]</span>
-                            </div>
-                            <div class="post-body" style="white-space: pre-wrap;">${formattedMsg}</div>
-                        </div>
-                    `;
-                });
-            } catch (e) { 
-                console.error(e);
+        // LIVE FEED LISTENER
+        onValue(messagesRef, (snapshot) => {
+            feed.innerHTML = '';
+            const data = snapshot.val();
+            if (!data) {
+                feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND ]</p>';
+                return;
             }
-        }
 
-        loadThreads();
-        setInterval(loadThreads, 20000); 
+            const entries = Object.entries(data).reverse();
+            entries.forEach(([id, msg], index) => {
+                const postID = entries.length - index;
+                const formattedMsg = msg.text.replace(/>>(\d+)/g, '<span class="reply-link">>>$1</span>');
+                
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.id = `p${postID}`;
+                postDiv.innerHTML = `
+                    <div class="post-header">
+                        <span style="color:var(--white)">${msg.username}</span> 
+                        <span style="color:#3fb950; margin-left: 5px;">#${postID}</span>
+                        <span class="btn-reply" data-id="${postID}">[Reply]</span>
+                    </div>
+                    <div class="post-body" style="white-space: pre-wrap;">${formattedMsg}</div>
+                `;
+                feed.appendChild(postDiv);
+            });
+        });
+
+        // REPLY LOGIC
+        feed.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-reply')) {
+                const id = e.target.getAttribute('data-id');
+                msgInput.value = `>>${id} ` + msgInput.value;
+                msgInput.focus();
+            }
+        });
     </script>
 </body>
 </html>
