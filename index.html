@@ -6,10 +6,10 @@
     <title>YOUTH // AWITHO</title>
     <style>
         :root {
-            --bg: #000000;
-            --accent: #ff0000;
-            --text: #ffffff;
-            --muted: #444444;
+            --bg: #0d1117;
+            --accent: #f85149;
+            --text: #c9d1d9;
+            --white: #ffffff;
         }
 
         body { 
@@ -20,80 +20,78 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .frame {
-            border: 1px solid var(--muted);
+        .container {
+            max-width: 600px;
+            border-left: 2px solid var(--accent);
             padding: 40px;
-            max-width: 500px;
-            position: relative;
+            background: linear-gradient(90deg, #161b22 0%, #0d1117 100%);
         }
 
-        .glitch-text {
-            font-size: 0.8rem;
+        .label {
             color: var(--accent);
-            position: absolute;
-            top: 10px;
-            left: 15px;
+            font-weight: bold;
             letter-spacing: 3px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: 3rem;
-            margin: 20px 0;
-            text-transform: uppercase;
-            border-bottom: 8px solid var(--accent);
-            display: inline-block;
+            font-size: 3.5rem;
+            margin: 0 0 20px 0;
+            color: var(--white);
+            letter-spacing: -2px;
         }
 
-        .msg {
+        .manifesto {
+            font-size: 1.2rem;
             line-height: 1.6;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
         }
 
         .highlight {
-            background-color: var(--text);
-            color: var(--bg);
-            padding: 0 5px;
+            color: var(--white);
+            border-bottom: 1px solid var(--accent);
         }
 
-        .footer-code {
+        .quote {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #000;
+            border-radius: 4px;
+            font-style: italic;
+            border: 1px hide #30363d;
+        }
+
+        .footer {
+            margin-top: 40px;
             font-size: 0.7rem;
-            color: var(--muted);
-            text-align: right;
-            margin-top: 20px;
+            opacity: 0.4;
+            letter-spacing: 1px;
         }
-
-        /* Subtle flicker effect */
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.9; }
-            100% { opacity: 1; }
-        }
-        .frame { animation: flicker 0.1s infinite alternate; }
     </style>
 </head>
 <body>
 
-    <div class="frame">
-        <div class="glitch-text">SGNL_RCVD_2026</div>
+    <div class="container">
+        <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
+        <h1>YOUTH.AWITHO</h1>
         
-        <h1>YOUTH.</h1>
-        
-        <div class="msg">
-            THEY TOLD US TO WAIT OUR TURN. <br>
-            <span class="highlight">WE DECIDED NOT TO.</span> <br><br>
-            THIS IS NOT A CLUB. <br>
-            THIS IS NOT A CLASS. <br>
-            THIS IS AN AUTONOMOUS ZONE.
+        <div class="manifesto">
+            They call us "students" to keep us small. <br>
+            They call us "kids" to keep us quiet. <br><br>
+            
+            We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
+            
+            <div class="quote">
+                "Knowledge is the only thing they can never take away from us."
+            </div>
         </div>
 
-        <div class="footer-code">
-            [ ENCRYPTED NODE: AWITHO.XYZ ] <br>
-            [ STATUS: UNBOUND ]
+        <div class="footer">
+            // NODE 01 // CLEARFIELD_UT // 2026
         </div>
     </div>
 
