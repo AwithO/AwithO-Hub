@@ -170,22 +170,86 @@
 
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
-    <script>
-        let submitted = false;
+
+<script>
+    let submitted = false;
+    
+    // IDs verified from your previous message
+    const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
+    const entryID = 'entry.633833791';
+    const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
+
+    const formElement = document.getElementById('anonymous-form');
+    const iframeElement = document.getElementById('hidden_iframe');
+    const inputElement = document.getElementById('message-input');
+
+    formElement.addEventListener('submit', function(e) {
+        // Prevent actual form submission to keep user on page
+        e.preventDefault(); 
         
-        const formID = '1FAIpQLScEeVqtK5Xte46STQI2FrjH_dXvkrwCvZrI8t9V7BTeuJ1otA';
-        const entryID = 'entry.633833791';
-        const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIhnfqfgTI4yUcwdXVSEA0oIgmHRJ0SkXnqMV7vEZCl2DXDzTZDHa8UnXYkmjzQQ-_7DSnFyy0c14q/pub?output=csv';
+        const msg = inputElement.value;
+        const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
+        
+        // Show the user something is happening
+        document.getElementById('status-msg').style.display = 'block';
+        document.getElementById('status-msg').innerText = '[ TRANSMITTING... ]';
 
-        const formElement = document.getElementById('anonymous-form');
-        const iframeElement = document.getElementById('hidden_iframe');
-        const statusMsg = document.getElementById('status-msg');
+        // Trigger the silent submission
+        submitted = true;
+        iframeElement.src = googleUrl;
+    });
 
-        formElement.addEventListener('submit', function() {
-            submitted = true;
-            const msg = document.getElementById('message-input').value;
-            const googleUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?${entryID}=${encodeURIComponent(msg)}&submit=Submit`;
-            iframeElement.src = googleUrl;
-        });
+    iframeElement.onload = function() {
+        if (submitted) {
+            inputElement.value = '';
+            document.getElementById('status-msg').innerText = '[ DATA_TRANSMITTED_SUCCESSFULLY ]';
+            submitted = false;
+            
+            // Wait 2 seconds then hide status and refresh the feed
+            setTimeout(() => { 
+                document.getElementById('status-msg').style.display = 'none'; 
+                loadThreads(); 
+            }, 2000);
+        }
+    };
 
-        iframeElement.
+    async function loadThreads() {
+        try {
+            // Adding a timestamp to the URL prevents the browser from "caching" old data
+            const response = await fetch(sheetCSV + '&t=' + new Date().getTime());
+            const data = await response.text();
+            
+            const rows = data.split('\n').filter(row => row.trim() !== '').slice(1);
+            const feed = document.getElementById('thread-feed');
+            
+            if (rows.length === 0) {
+                feed.innerHTML = '<p style="color: #444;">[ NO LOGS FOUND IN THE WIRE ]</p>';
+                return;
+            }
+
+            feed.innerHTML = ''; 
+            rows.reverse().forEach((row, index) => {
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+                if (cols.length < 2) return;
+
+                const time = cols[0].replace(/"/g, '');
+                const msg = cols[1].replace(/"/g, '');
+
+                feed.innerHTML += `
+                    <div class="post">
+                        <div class="post-header">
+                            Anonymous <span style="font-weight:bold;">#${rows.length - index}</span>
+                            <span style="color:#8b949e; margin-left:10px;">${time}</span>
+                        </div>
+                        <div class="post-body">${msg}</div>
+                    </div>
+                `;
+            });
+        } catch (error) {
+            console.error('Feed Error:', error);
+        }
+    }
+
+    loadThreads();
+    setInterval(loadThreads, 30000); // Check for new posts every 30 seconds
+</script>
