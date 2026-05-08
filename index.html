@@ -67,6 +67,14 @@
             box-sizing: border-box;
         }
 
+        #reply-indicator { 
+            color: var(--green); 
+            font-size: 0.8rem; 
+            margin-bottom: 10px; 
+            display: none; 
+            font-weight: bold;
+        }
+
         .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
         
         input[type="text"] {
@@ -109,11 +117,24 @@
             background: #0d1117;
             border: 1px solid #30363d;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .post-header { color: #3fb950; font-size: 0.8rem; margin-bottom: 10px; }
-        .reply-link { color: var(--accent); font-weight: bold; }
+        
+        .replies-container {
+            margin-left: 20px;
+            border-left: 2px solid var(--green);
+            padding-left: 15px;
+            margin-top: 15px;
+        }
+
+        .reply-item {
+            padding: 10px 0;
+            border-top: 1px solid #30363d;
+            font-size: 0.9rem;
+        }
+
         .btn-reply { 
             font-size: 0.7rem; 
             color: #8b949e; 
@@ -121,6 +142,8 @@
             margin-left: 10px; 
             text-decoration: underline; 
         }
+
+        .cancel-x { color: var(--accent); cursor: pointer; margin-left: 10px; }
 
         .footer { margin-top: 80px; font-size: 0.7rem; opacity: 0.4; text-align: center; }
     </style>
@@ -147,11 +170,12 @@
 
         <div class="custom-post-box">
             <div class="label">// INPUT_INTEL</div>
+            <div id="reply-indicator">REPLYING_TO: <span id="target-id"></span> <span class="cancel-x" onclick="cancelReply()">[CANCEL]</span></div>
             <form id="anonymous-form">
                 <div class="input-row">
                     <input type="text" id="name-input" placeholder="Handle (Optional)">
                 </div>
-                <textarea id="message-input" placeholder="Enter message... Use >>[ID] to reply" required></textarea>
+                <textarea id="message-input" placeholder="Enter message..." required></textarea>
                 <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
             </form>
         </div>
@@ -170,20 +194,19 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // REPLACE WITH YOUR ACTUAL CONFIG FROM FIREBASE CONSOLE
         const firebaseConfig = {
             apiKey: "AIzaSyBpLuL8fVwowVXscZ7ZSjk9l4Cx0nEqU4Y",
-           authDomain: "awithoyouth.firebaseapp.com",
-          projectId: "awithoyouth",
-          storageBucket: "awithoyouth.firebasestorage.app",
-          messagingSenderId: "895546768017",
-          appId: "1:895546768017:web:75f429127fb7784f9f1d30",
-           measurementId: "G-XY20K8L5VP"
+            authDomain: "awithoyouth.firebaseapp.com",
+            databaseURL: "https://awithoyouth-default-rtdb.firebaseio.com/", // Verify this in your Firebase Data tab
+            projectId: "awithoyouth",
+            storageBucket: "awithoyouth.firebasestorage.app",
+            messagingSenderId: "895546768017",
+            appId: "1:895546768017:web:75f429127fb7784f9f1d30",
+            measurementId: "G-XY20K8L5VP"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -194,20 +217,32 @@
         const nameInput = document.getElementById('name-input');
         const msgInput = document.getElementById('message-input');
         const feed = document.getElementById('thread-feed');
+        let currentReplyKey = null;
 
         // SEND TO FIREBASE
         formElement.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = nameInput.value || "Anonymous";
             
-            push(messagesRef, {
-                username: name,
-                text: msgInput.value,
-                timestamp: serverTimestamp()
-            });
+            if (currentReplyKey) {
+                // Nested Reply
+                const replyRef = ref(db, `messages/${currentReplyKey}/replies`);
+                push(replyRef, {
+                    username: name,
+                    text: msgInput.value,
+                    timestamp: serverTimestamp()
+                });
+            } else {
+                // Top-Level Post
+                push(messagesRef, {
+                    username: name,
+                    text: msgInput.value,
+                    timestamp: serverTimestamp()
+                });
+            }
 
             msgInput.value = '';
-            nameInput.value = '';
+            cancelReply();
             document.getElementById('status-msg').style.display = 'block';
             setTimeout(() => { document.getElementById('status-msg').style.display = 'none'; }, 2000);
         });
@@ -221,34 +256,49 @@
                 return;
             }
 
+            // Reverse to show newest posts first
             const entries = Object.entries(data).reverse();
-            entries.forEach(([id, msg], index) => {
-                const postID = entries.length - index;
-                const formattedMsg = msg.text.replace(/>>(\d+)/g, '<span class="reply-link">>>$1</span>');
-                
+            entries.forEach(([key, msg]) => {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
-                postDiv.id = `p${postID}`;
+                
+                let repliesHtml = '';
+                if (msg.replies) {
+                    repliesHtml = `<div class="replies-container">`;
+                    Object.values(msg.replies).forEach(r => {
+                        repliesHtml += `
+                            <div class="reply-item">
+                                <div class="post-header"><span style="color:var(--white)">${r.username}</span></div>
+                                <div style="white-space: pre-wrap;">${r.text}</div>
+                            </div>`;
+                    });
+                    repliesHtml += `</div>`;
+                }
+
                 postDiv.innerHTML = `
                     <div class="post-header">
                         <span style="color:var(--white)">${msg.username}</span> 
-                        <span style="color:#3fb950; margin-left: 5px;">#${postID}</span>
-                        <span class="btn-reply" data-id="${postID}">[Reply]</span>
+                        <span class="btn-reply" onclick="setReplyTarget('${key}', '${msg.username}')">[Reply]</span>
                     </div>
-                    <div class="post-body" style="white-space: pre-wrap;">${formattedMsg}</div>
+                    <div class="post-body" style="white-space: pre-wrap;">${msg.text}</div>
+                    ${repliesHtml}
                 `;
                 feed.appendChild(postDiv);
             });
         });
 
-        // REPLY LOGIC
-        feed.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-reply')) {
-                const id = e.target.getAttribute('data-id');
-                msgInput.value = `>>${id} ` + msgInput.value;
-                msgInput.focus();
-            }
-        });
+        // GLOBAL HELPERS
+        window.setReplyTarget = (key, user) => {
+            currentReplyKey = key;
+            document.getElementById('reply-indicator').style.display = 'block';
+            document.getElementById('target-id').innerText = user;
+            msgInput.focus();
+        };
+
+        window.cancelReply = () => {
+            currentReplyKey = null;
+            document.getElementById('reply-indicator').style.display = 'none';
+        };
     </script>
 </body>
 </html>
