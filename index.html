@@ -1,12 +1,17 @@
-<!-- Keep your existing <head> and <style> sections exactly as they are -->
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUTH AWITHO</title>
+    <title>YOUTH // AWITHO</title>
+    <!-- External CSS link -->
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+</head>
 <body>
+
     <div class="container">
-        <!-- Wrap the manifesto/form in a div so we can hide it in Thread Mode -->
+        <!-- Section visible only on the main landing page -->
         <div id="main-content">
             <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
             <h1>YOUTH AWITHO</h1>
@@ -22,25 +27,28 @@
                     "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
                 </div>
 
-                We are a decentralized student collective built on solidarity.
+                We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us.
             </div>
+        </div>
 
-            <div class="custom-post-box">
-                <div class="label">// INPUT_INTEL</div>
-                <div id="reply-indicator">REPLYING_TO: <span id="target-id"></span> <span class="cancel-x" onclick="cancelReply()">[CANCEL]</span></div>
+        <!-- Section visible only when viewing a specific thread -->
+        <div id="thread-header" style="display:none; width: 100%; margin-bottom: 20px;">
+            <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">[ ← BACK TO THE WIRE ]</a>
+            
+            <div class="custom-post-box" style="margin-top: 30px;">
+                <div class="label">// INPUT_REPLY</div>
                 <form id="anonymous-form">
                     <div class="input-row">
                         <input type="text" id="name-input" placeholder="Handle (Optional)">
                     </div>
-                    <textarea id="message-input" placeholder="Enter message..." required></textarea>
-                    <button type="submit" class="submit-btn">POST_TO_THE_WIRE</button>
+                    <textarea id="message-input" placeholder="Enter your reply to the thread..." required></textarea>
+                    <button type="submit" class="submit-btn">SEND_TO_THREAD</button>
                 </form>
             </div>
         </div>
 
-        <!-- Back button (Only visible in thread mode) -->
-        <div id="thread-header" style="display:none; width: 100%; margin-bottom: 20px;">
-            <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">[ ← BACK TO THE WIRE ]</a>
+        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 20px; display: none; font-weight: bold;">
+            [ DATA_TRANSMITTED_SUCCESSFULLY ]
         </div>
 
         <div class="label" id="feed-label">// THE_WIRE_FEED</div>
@@ -53,94 +61,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBpLuL8fVwowVXscZ7ZSjk9l4Cx0nEqU4Y",
-            authDomain: "awithoyouth.firebaseapp.com",
-            databaseURL: "https://awithoyouth-default-rtdb.firebaseio.com/",
-            projectId: "awithoyouth",
-            storageBucket: "awithoyouth.firebasestorage.app",
-            messagingSenderId: "895546768017",
-            appId: "1:895546768017:web:75f429127fb7784f9f1d30"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        
-        // --- ROUTING LOGIC ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const threadId = urlParams.get('post');
-
-        if (threadId) {
-            // WE ARE IN THREAD MODE
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('thread-header').style.display = 'block';
-            document.getElementById('feed-label').innerText = `// THREAD_ID: ${threadId.substring(0,8)}`;
-            loadSingleThread(threadId);
-        } else {
-            // WE ARE IN MAIN FEED MODE
-            loadMainFeed();
-        }
-
-        function loadMainFeed() {
-            const messagesRef = ref(db, 'messages');
-            onValue(messagesRef, (snapshot) => {
-                const feed = document.getElementById('thread-feed');
-                feed.innerHTML = '';
-                const data = snapshot.val();
-                if (!data) return;
-
-                Object.entries(data).reverse().forEach(([key, msg]) => {
-                    const replyCount = msg.replies ? Object.keys(msg.replies).length : 0;
-                    const postDiv = document.createElement('div');
-                    postDiv.className = 'post';
-                    postDiv.innerHTML = `
-                        <div class="post-header"><span style="color:var(--white)">${msg.username}</span></div>
-                        <div class="post-body">${msg.text}</div>
-                        <div style="margin-top:10px;">
-                            <a href="?post=${key}" style="color:var(--green); font-size:0.8rem; text-decoration:none;">
-                                [ VIEW THREAD (${replyCount}) ]
-                            </a>
-                        </div>
-                    `;
-                    feed.appendChild(postDiv);
-                });
-            });
-        }
-
-        function loadSingleThread(id) {
-            const postRef = ref(db, `messages/${id}`);
-            onValue(postRef, (snapshot) => {
-                const feed = document.getElementById('thread-feed');
-                const msg = snapshot.val();
-                if (!msg) return;
-
-                let repliesHtml = '';
-                if (msg.replies) {
-                    Object.values(msg.replies).forEach(r => {
-                        repliesHtml += `
-                            <div class="reply-item" style="border-top:1px solid #30363d; padding:10px 0;">
-                                <div class="post-header"><span style="color:var(--white)">${r.username}</span></div>
-                                <div>${r.text}</div>
-                            </div>`;
-                    });
-                }
-
-                feed.innerHTML = `
-                    <div class="post" style="border: 2px solid var(--green);">
-                        <div class="post-header"><span style="color:var(--white)">${msg.username}</span></div>
-                        <div class="post-body" style="font-size:1.2rem;">${msg.text}</div>
-                    </div>
-                    <div class="label" style="margin-top:20px;">// REPLIES</div>
-                    <div class="replies-container">${repliesHtml || '[ NO REPLIES YET ]'}</div>
-                `;
-            });
-        }
-
-        // Keep your existing Submit Logic here, just make sure 
-        // the 'if(currentReplyKey)' uses the threadId if it exists!
-    </script>
+    <!-- Firebase Logic -->
+    <script type="module" src="app.js"></script>
 </body>
+</html>
