@@ -3,13 +3,14 @@ import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gs
 
 // !!! PASTE YOUR NEW FIREBASE CONFIG HERE !!!
 const firebaseConfig = {
-    apiKey: "YOUR_NEW_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com/",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBpLuL8fVwowVXscZ7ZSjk9l4Cx0nEqU4Y",
+    authDomain: "awithoyouth.firebaseapp.com",
+    databaseURL: "https://awithoyouth-default-rtdb.firebaseio.com",
+    projectId: "awithoyouth",
+    storageBucket: "awithoyouth.firebasestorage.app",
+    messagingSenderId: "895546768017",
+    appId: "1:895546768017:web:75f429127fb7784f9f1d30",
+    measurementId: "G-XY20K8L5VP"
 };
 
 const app = initializeApp(firebaseConfig);
