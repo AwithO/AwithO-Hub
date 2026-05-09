@@ -21,39 +21,6 @@ body {
 
 .container { max-width: 650px; width: 100%; }
 
-.nav-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-}
-
-.nav-tab {
-    color: var(--text);
-    text-decoration: none;
-    padding: 5px 10px;
-    border: 1px solid var(--border);
-    background-color: transparent;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.nav-tab:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    background-color: rgba(248, 81, 73, 0.1);
-}
-
-.nav-tab.active {
-    color: var(--accent);
-    border-color: var(--accent);
-    background-color: rgba(248, 81, 73, 0.15);
-}
-
 .label { 
     color: var(--accent); 
     font-weight: bold; 
