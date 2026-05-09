@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUTH // AWITHO</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="app.js"></script>
+    <!-- Removed script from here to prevent double-loading -->
 </head>
 <body>
 
@@ -31,7 +31,6 @@
             </div>
         </div>
 
-        <!-- This box now appears on BOTH the main feed and threads -->
         <div id="posting-area">
             <div class="custom-post-box">
                 <div class="label" id="input-label">// INPUT_INTEL</div>
@@ -57,6 +56,7 @@
         </div>
     </div>
 
+    <!-- Only one script tag at the very bottom -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
