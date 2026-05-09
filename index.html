@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUTH // AWITHO</title>
-    <!-- External CSS link -->
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="app.js"></script>
 </head>
 <body>
 
     <div class="container">
-        <!-- Section visible only on the main landing page -->
         <div id="main-content">
             <div class="label">ORIGIN_SUBDOMAIN: YOUTH</div>
             <h1>YOUTH AWITHO</h1>
@@ -20,40 +18,33 @@
                 They call us "students" to keep us small. <br>
                 They call us "kids" to keep us quiet. <br><br>
                 
-                We are the <span class="highlight">rising generation</span>. We aren't waiting for permission to understand the world we're inheriting.
+                We are the <span class="highlight">rising generation</span>.
                 
                 <div class="quote-box">
-                    "Knowledge is the only thing they can never take away from us."<br><br>
-                    "Corruption thrives in silence — we refuse to let it shape our schools or our futures."
+                    "Knowledge is the only thing they can never take away from us."
                 </div>
-
-                We are a decentralized student collective built on solidarity. This is our space to organize, discuss, and challenge the rules and policies that try to limit us.
             </div>
         </div>
 
-        <!-- Section visible only when viewing a specific thread -->
-        <div id="thread-header" style="display:none; width: 100%; margin-bottom: 20px;">
-            <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">[ ← BACK TO THE WIRE ]</a>
-            
-            <div class="custom-post-box" style="margin-top: 30px;">
-                <div class="label">// INPUT_REPLY</div>
+        <!-- This box now appears on BOTH the main feed and threads -->
+        <div id="posting-area">
+            <div class="custom-post-box">
+                <div class="label" id="input-label">// INPUT_INTEL</div>
                 <form id="anonymous-form">
-                    <div class="input-row">
-                        <input type="text" id="name-input" placeholder="Handle (Optional)">
-                    </div>
-                    <textarea id="message-input" placeholder="Enter your reply to the thread..." required></textarea>
-                    <button type="submit" class="submit-btn">SEND_TO_THREAD</button>
+                    <input type="text" id="name-input" placeholder="Handle (Optional)">
+                    <textarea id="message-input" placeholder="Enter transmission..." required></textarea>
+                    <button type="submit" class="submit-btn" id="submit-button">POST_TO_THE_WIRE</button>
                 </form>
             </div>
         </div>
 
-        <div id="status-msg" style="color: var(--green); font-size: 0.8rem; margin-bottom: 20px; display: none; font-weight: bold;">
-            [ DATA_TRANSMITTED_SUCCESSFULLY ]
+        <div id="thread-header" style="display:none;">
+            <a href="index.html" class="back-link">[ ← RETURN_TO_MAIN_FEED ]</a>
         </div>
 
         <div class="label" id="feed-label">// THE_WIRE_FEED</div>
         <div id="thread-feed">
-            <p style="color: #444;">[ INITIALIZING SECURE FEED... ]</p>
+            <p class="loading">[ INITIALIZING_SECURE_FEED... ]</p>
         </div>
 
         <div class="footer">
@@ -61,7 +52,6 @@
         </div>
     </div>
 
-    <!-- Firebase Logic -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
